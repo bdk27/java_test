@@ -14,33 +14,44 @@ public class AtmAPP {
             System.out.println("請先登入");
 
             System.out.print("請輸入帳號:");
-            String username = scanner.nextLine();
+            String inputusername = scanner.nextLine();
             System.out.print("請輸入密碼:");
-            String password = scanner.nextLine();
+            String inputpassword = scanner.nextLine();
 
             User loginUser = null;
             // 檢查帳密是否正確
             for (User user : users) {
-                if (user.login(username, password)) {
-                    loginUser = user;
+                if(user.getUsername().equals(inputusername)) {
+                    if(user.isAccountLocked()) {
+                        System.out.println("此帳號已被封鎖!!!");
+                        break;
+                    }
+
+                    if(user.login(inputusername, inputpassword)) {
+                        loginUser = user;
+                        System.out.printf("登入成功! 歡迎%s\n", loginUser.getUsername());
+                    } else {
+                        System.out.println("登入失敗，第 " + user.getLoginFailCount() + " 次錯誤");
+                        if (user.isAccountLocked()) {
+                            System.out.println("帳號已鎖定！");
+                        }
+                    }
                     break;
                 }
             }
 
             if(loginUser == null) {
-                System.out.println("登入失敗，請重試!");
                 continue;
             }
-            System.out.printf("登入成功! 歡迎%s\n", loginUser.getUsername());
+
+            System.out.println("請選擇操作：");
+            System.out.println("1.查詢餘額");
+            System.out.println("2.存款");
+            System.out.println("3.提款");
+            System.out.println("4.登出");
 
             // 進入 ATM 操作
             while (true) {
-                System.out.println("請選擇操作：");
-                System.out.println("1.查詢餘額");
-                System.out.println("2.存款");
-                System.out.println("3.提款");
-                System.out.println("4.登出");
-
                 System.out.print("輸入選項：");
                 int choice = Integer.parseInt(scanner.nextLine()); // 避免 nextInt 留換行問題
 

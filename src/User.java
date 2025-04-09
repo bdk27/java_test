@@ -1,16 +1,38 @@
 public class User {
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     private int balance;
+    private int loginFailCount;
+    private boolean isLocked;
+
 
     public User(String username, String password, int balance) {
         this.username = username;
         this.password = password;
         this.balance = balance;
+        this.loginFailCount = 0;
+        this.isLocked = false;
     }
     //登入驗證
     public boolean login(String inputUsername, String inputPassword) {
-        return this.username.equals(inputUsername) && this.password.equals(inputPassword);
+        if(isLocked) return false;
+
+        if(username.equals(inputUsername) && password.equals(inputPassword)) {
+            loginFailCount = 0;
+            return true;
+        } else {
+            loginFailCount ++;
+            if(loginFailCount >= 3) isLocked = true;
+            return false;
+        }
+    }
+    //是否封鎖登入
+    public boolean isAccountLocked() {
+        return isLocked;
+    }
+    //取得錯誤次數
+    public int getLoginFailCount() {
+        return loginFailCount;
     }
     //查餘額
     public int getBalance() {
