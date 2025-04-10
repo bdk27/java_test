@@ -48,7 +48,8 @@ public class AtmAPP {
             System.out.println("1.查詢餘額");
             System.out.println("2.存款");
             System.out.println("3.提款");
-            System.out.println("4.登出");
+            System.out.println("4.查詢交易紀錄");
+            System.out.println("5.登出");
 
             // 進入 ATM 操作
             while (true) {
@@ -70,6 +71,9 @@ public class AtmAPP {
                         loginUser.withdraw(withdrawAmount);
                         break;
                     case 4:
+                        loginUser.printTransactionHistory();
+                        break;
+                    case 5:
                         System.out.println("已登出使用者：" + loginUser.getUsername());
                         break;
                     default:
@@ -77,7 +81,7 @@ public class AtmAPP {
                 }
 
                 // 選 4 代表登出 → 跳出 ATM 迴圈回到登入畫面
-                if (choice == 4) break;
+                if (choice == 5) break;
             }
 
         }

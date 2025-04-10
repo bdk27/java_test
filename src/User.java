@@ -1,9 +1,14 @@
+import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class User {
     private final String username;
     private final String password;
     private int balance;
     private int loginFailCount;
     private boolean isLocked;
+    private final ArrayList<String> transactionHistory = new ArrayList<>();
 
 
     public User(String username, String password, int balance) {
@@ -41,7 +46,9 @@ public class User {
     //存款
     public void deposit(int amount) {
         if(amount > 0) {
+            String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
             balance += amount;
+            transactionHistory.add(time + " 存款$" + amount + " 餘額$" + balance);
         } else {
             System.out.println("存款必須大於0");
         }
@@ -51,8 +58,21 @@ public class User {
         if(amount > balance) {
             System.out.println("餘額不足，提款失敗");
         } else {
+            String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
             balance -= amount;
+            transactionHistory.add(time + " 提款$" + amount + " 餘額$" + balance);
             System.out.printf("已提款 $%d，剩餘餘額 $%d\n", amount, balance);
+        }
+    }
+    //交易紀錄
+    public void printTransactionHistory() {
+        if(transactionHistory.isEmpty()) {
+            System.out.println("尚無交易紀錄");
+        } else {
+            System.out.println("交易紀錄如下");
+            for(String record : transactionHistory) {
+                System.out.println(record);
+            }
         }
     }
     //登出
