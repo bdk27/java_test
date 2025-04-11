@@ -78,6 +78,13 @@ public class  AtmAPP {
                 if (loginUser != null) {
                     // 進入 ATM 操作
                     while (true) {
+                        System.out.println("請選擇操作：");
+                        System.out.println("1.查詢餘額");
+                        System.out.println("2.存款");
+                        System.out.println("3.提款");
+                        System.out.println("4.查詢交易紀錄");
+                        System.out.println("5.登出");
+
                         System.out.print("輸入選項：");
                         int choice = Integer.parseInt(scanner.nextLine()); // 避免 nextInt 留換行問題
 
