@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter;
 
 public class User {
     private final String username;
-    private final String password;
+    private String password;
     private int balance;
     private int loginFailCount;
     private boolean isLocked;
@@ -75,8 +75,16 @@ public class User {
             }
         }
     }
-    //登出
+    //取得帳號
     public String getUsername() {
         return username;
+    }
+    //取得密碼
+    public String getPassword() {
+        return password;
+    }
+    //修改密碼
+    public void changePassword(String pwd) {
+        password = pwd;
     }
 }
