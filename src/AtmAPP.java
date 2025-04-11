@@ -46,13 +46,9 @@ class UserManager {
         return null;
     }
     //刪除帳號
-//    public void deleteUser(String user) {
-//        for(User u : users) {
-//            if(u.equals(user)) {
-//
-//            }
-//        }
-//    }
+    public void removeUser(User user) {
+        users.remove(user);
+    }
     //所有人員清單
     public ArrayList<User> getAllUsers() {
         return users;
@@ -73,9 +69,9 @@ public class  AtmAPP {
             int operation = Integer.parseInt(scanner.nextLine());
 
             if(operation == 1) {
-                System.out.print("請輸入帳號:");
+                System.out.print("請輸入帳號: ");
                 String inputusername = scanner.nextLine();
-                System.out.print("請輸入密碼:");
+                System.out.print("請輸入密碼: ");
                 String inputpassword = scanner.nextLine();
 
                 User loginUser = userManager.login(inputusername, inputpassword);
@@ -83,7 +79,7 @@ public class  AtmAPP {
                 if (loginUser != null) {
                     // 進入 ATM 操作
                     while (true) {
-                        System.out.println("請選擇操作：");
+                        System.out.println("請選擇操作: ");
                         System.out.println("1.查詢餘額");
                         System.out.println("2.存款");
                         System.out.println("3.提款");
@@ -92,20 +88,20 @@ public class  AtmAPP {
                         System.out.println("6.刪除帳號");
                         System.out.println("7.登出");
 
-                        System.out.print("輸入選項：");
+                        System.out.print("輸入選項: ");
                         int choice = Integer.parseInt(scanner.nextLine()); // 避免 nextInt 留換行問題
 
                         switch (choice) {
                             case 1:
-                                System.out.println("目前餘額為：$" + loginUser.getBalance());
+                                System.out.println("目前餘額為: $" + loginUser.getBalance());
                                 break;
                             case 2:
-                                System.out.print("請輸入存款金額：");
+                                System.out.print("請輸入存款金額: ");
                                 int depositAmount = Integer.parseInt(scanner.nextLine());
                                 loginUser.deposit(depositAmount);
                                 break;
                             case 3:
-                                System.out.print("請輸入提款金額：");
+                                System.out.print("請輸入提款金額: ");
                                 int withdrawAmount = Integer.parseInt(scanner.nextLine());
                                 loginUser.withdraw(withdrawAmount);
                                 break;
@@ -113,33 +109,43 @@ public class  AtmAPP {
                                 loginUser.printTransactionHistory();
                                 break;
                             case 5:
-                                System.out.print("請輸入原密碼：");
+                                System.out.print("請輸入原密碼: ");
                                 String oldPassword = scanner.nextLine();
                                 if(oldPassword.equals(loginUser.getPassword())) {
-                                    System.out.print("請輸入新密碼：");
+                                    System.out.print("請輸入新密碼: ");
                                     String newPassword = scanner.nextLine();
-                                    System.out.print("請再次輸入新密碼：");
+                                    System.out.print("請再次輸入新密碼: ");
                                     String confirmPassword = scanner.nextLine();
 
                                     if(newPassword.isEmpty()) {
                                         System.out.print("新密碼不能為空!");
                                     } else if (!newPassword.equals(confirmPassword)) {
-                                        System.out.println("兩次輸入的新密碼不一致！");
+                                        System.out.println("兩次輸入的新密碼不一致!");
                                     } else if (newPassword.equals(oldPassword)) {
-                                        System.out.println("新密碼不能與舊密碼相同！");
+                                        System.out.println("新密碼不能與舊密碼相同!");
                                     } else {
                                         loginUser.changePassword(newPassword);
-                                        System.out.println("密碼已更新成功，請重新登入！");
+                                        System.out.println("密碼已更新成功，請重新登入!");
                                         break;
                                     }
                                 } else {
-                                    System.out.println("原密碼輸入錯誤！");
+                                    System.out.println("原密碼輸入錯誤!");
                                 }
                             case 6:
-                                //userManager.deleteUser(loginUser.getUsername());
+                                System.out.print("確認刪除帳號，請再次輸入密碼: ");
+                                String confirmDelete = scanner.nextLine();
+
+                                if(confirmDelete.equals(loginUser.getUsername())) {
+                                    userManager.removeUser(loginUser);
+                                    System.out.println("帳號已刪除，系統將登出");
+                                    loginUser = null;
+                                    choice = 7;
+                                } else {
+                                    System.out.println("密碼錯誤，取消刪除帳號");
+                                }
                                 break;
                             case 7:
-                                System.out.println("已登出使用者：" + loginUser.getUsername());
+                                System.out.println("已登出使用者: " + loginUser.getUsername());
                                 break;
                             default:
                                 System.out.println("請輸入 1～7 的選項");
