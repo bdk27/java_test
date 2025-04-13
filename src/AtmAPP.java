@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.*;
 
 class UserManager {
     private final ArrayList<User> users = new ArrayList<>();
@@ -18,7 +19,9 @@ class UserManager {
         if (isUsernameTaken(username)) {
             System.out.println("此帳號已被使用，請重新輸入");
         } else {
-            users.add(new User(username, password, balance));
+            User newUser = new User(username, password, balance);
+            users.add(newUser);
+            saveUserToFile(newUser);
             System.out.println("註冊成功，請重新登入");
         }
     }
@@ -53,12 +56,39 @@ class UserManager {
     public ArrayList<User> getAllUsers() {
         return users;
     }
+    //讀取檔案資料
+    public void loadFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    String username = parts[0];
+                    String password = parts[1];
+                    int balance = Integer.parseInt(parts[2]);
+                    users.add(new User(username, password, balance));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("讀取檔案失敗: " + e.getMessage());
+        }
+    }
+
+    //新增資料到檔案中
+    public void saveUserToFile(User user) {
+        try (FileWriter writer = new FileWriter("users.txt", true)) {
+            writer.write(user.getUsername() + "," + user.getPassword() + "," + user.getBalance() + "\n");
+        } catch (IOException e) {
+            System.out.println("寫入檔案失敗: " + e.getMessage());
+        }
+    }
 }
 
 public class  AtmAPP {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         UserManager userManager = new UserManager();
+        userManager.loadFromFile();
 
         while (true) {
             System.out.println("請選擇操作:");
@@ -75,8 +105,7 @@ public class  AtmAPP {
                 String inputpassword = scanner.nextLine();
 
                 User loginUser = userManager.login(inputusername, inputpassword);
-
-                if (loginUser != null) {
+            if (loginUser != null) {
                     // 進入 ATM 操作
                     while (true) {
                         System.out.println("請選擇操作: ");
