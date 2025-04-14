@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -48,7 +49,9 @@ public class User {
         if(amount > 0) {
             String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
             balance += amount;
-            transactionHistory.add(time + " 存款$" + amount + " 餘額$" + balance);
+            String record = time + " 存款$" + amount + " 餘額$" + balance;
+            transactionHistory.add(record);
+            appendTransactionToFile(record);
         } else {
             System.out.println("存款必須大於0");
         }
@@ -60,7 +63,9 @@ public class User {
         } else {
             String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
             balance -= amount;
-            transactionHistory.add(time + " 提款$" + amount + " 餘額$" + balance);
+            String record = time + " 存款$" + amount + " 餘額$" + balance;
+            transactionHistory.add(record);
+            appendTransactionToFile(record);
             System.out.printf("已提款 $%d，剩餘餘額 $%d\n", amount, balance);
         }
     }
@@ -86,5 +91,34 @@ public class User {
     //修改密碼
     public void changePassword(String pwd) {
         password = pwd;
+    }
+    //將紀錄寫入log
+    public void appendTransactionToFile(String record) {
+        try {
+            File logDir = new File("logs");
+            if (!logDir.exists() && !logDir.mkdirs()) {
+                System.out.println("建立 logs 資料夾失敗！");
+            }
+
+            FileWriter writer = new FileWriter("logs/" + username + ".log", true);
+            writer.write(record + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("寫入交易紀錄失敗: " + e.getMessage());
+        }
+    }
+    //讀取紀錄
+    public void loadTransactionHistory() {
+        File logFile = new File("logs/" + username + ".log");
+        if(!logFile.exists()) return;
+
+        try(BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
+            String line;
+            while((line = reader.readLine()) != null) {
+                transactionHistory.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("讀取交易紀錄失敗: " + e.getMessage());
+        }
     }
 }

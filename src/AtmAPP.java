@@ -34,7 +34,7 @@ class UserManager {
                     return null;
                 }
                 if (u.login(username, password)) {
-                    System.out.println("登入成功，歡迎 " + username);
+                    u.loadTransactionHistory();
                     return u;
                 } else {
                     System.out.println("登入失敗，第 " + u.getLoginFailCount() + " 次錯誤");
@@ -73,7 +73,6 @@ class UserManager {
             System.out.println("讀取檔案失敗: " + e.getMessage());
         }
     }
-
     //新增資料到檔案中
     public void saveUserToFile(User user) {
         try (FileWriter writer = new FileWriter("users.txt", true)) {
@@ -164,7 +163,7 @@ public class  AtmAPP {
                                 System.out.print("確認刪除帳號，請再次輸入密碼: ");
                                 String confirmDelete = scanner.nextLine();
 
-                                if(confirmDelete.equals(loginUser.getUsername())) {
+                                if(confirmDelete.equals(loginUser.getPassword())) {
                                     userManager.removeUser(loginUser);
                                     System.out.println("帳號已刪除，系統將登出");
                                     loginUser = null;
