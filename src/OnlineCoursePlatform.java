@@ -1,69 +1,21 @@
-import java.util.ArrayList;
-
-public interface Downloadable {
-    void downloadMaterials();
-}
-
-public abstract class Course {
-    private String title;
-    private String teacher;
-    private int price;
-    private ArrayList<String> studentList = new ArrayList<>();
-
-    public Course(String title, String teacher, int price) {
-        this.title = title;
-        this.teacher = teacher;
-        this.price = price;
-    }
-
-    void start();
-    void enrollStudent();
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getTeacher() {
-        return teacher;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-}
-
-public class LiveCourse {
-
-}
-
-public class RecordedCourse {
-
-}
-
-public class platform {
-    private static int totalCourses = 0;
-    private ArrayList<Course> courseList = new ArrayList<>();
-
-    public void addCourse(Course course) {
-        courseList.add(course);
-        totalCourses++;
-        System.out.println("課程已上架: " + course.getTitle());
-    }
-
-    public void listAllCourse() {
-        System.out.println("所有課程: ");
-        for(Course c : courseList) {
-            System.out.println("- " + c.getTitle() + "(老師:" + c.getTeacher() + ", 價格:$" + c.getPrice() + ")");
-        }
-    }
-
-    public static int getTotalCourses() {
-        return totalCourses;
-    }
-}
-
 public class OnlineCoursePlatform {
     public static void main(String[] args) {
-        
+        Platform platform = new Platform();
+        LiveCourse live = new LiveCourse("java", "brian", 2000, "每周一晚上8點");
+        RecordedCourse recorded = new RecordedCourse("vue3", "amy", 1500);
+
+        platform.addCourse(live);
+        platform.addCourse(recorded);
+
+        live.enrollStudent("小名");
+        recorded.enrollStudent("小華");
+
+        live.start();
+        recorded.start();
+
+        recorded.downloadMaterials();
+
+        platform.listAllCourse();
+        System.out.println("目前課程總數: " + Platform.getTotalCourses());
     }
 }
